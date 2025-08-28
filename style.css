@@ -50,7 +50,30 @@ p.lead {
   align-items: center;
 }
 
-/* Beautiful file button */
+/* Watermark section */
+.watermark-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#watermark {
+  background: var(--bg);
+  color: #f8fafc;
+  border: 1px solid var(--muted);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+#watermarkColor {
+  width: 50px;
+  height: 34px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 .filebox {
   position: relative;
   overflow: hidden;
@@ -133,6 +156,7 @@ select, input[type="text"] {
   padding: 6px 10px;
   border-radius: 8px;
 }
+
 .thumbs {
   margin-top: 16px;
   display: grid;
@@ -178,6 +202,7 @@ select, input[type="text"] {
 .thumb .remove:hover {
   background: rgba(255,0,0,0.8);
 }
+
 .progress {
   margin-top: 14px;
   height: 10px;
@@ -213,7 +238,7 @@ a{
     text-decoration: none;
 }
 
-/* Mobile adjustments */
+
 @media (max-width: 600px) {
   .controls {
     flex-direction: column;
