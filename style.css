@@ -1,19 +1,35 @@
 :root {
-  --bg: #0f172a;
-  --card: #1e293b;
+  --card: rgba(30, 41, 59, 0.75);
   --muted: #94a3b8;
-  --accent: #38bdf8;
-  --accent-dark: #0ea5e9;
+  --accent: linear-gradient(135deg, #b98c8c, #0ea5e9, #2563eb);
+  --accent-dark: #1d4ed8;
+  --glow: #38bdf8;
 }
+
 
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  background: var(--bg);
-  color: #f1f5f9;
+  background: linear-gradient(-45deg, #578aff, #00000083, #5e5e5e, #0f172a);
+  background-size: 400% 400%;
+  animation: gradientFlow 15s ease infinite;
+  color: #ffffff;
 }
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 
 .wrap {
   max-width: 900px;
@@ -21,36 +37,43 @@ html, body {
   padding: 20px;
 }
 
+
 header {
   text-align: center;
   margin-bottom: 20px;
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 28px;
   margin-bottom: 8px;
-  color: var(--accent);
+  /* background: var(--accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
+  color: #ffffff;
+  
 }
 
 p.lead {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--muted);
   margin: 0;
 }
 
+
 .controls {
   background: var(--card);
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 16px;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   align-items: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  backdrop-filter: blur(12px);
 }
 
-/* Watermark section */
+
 .watermark-controls {
   display: flex;
   align-items: center;
@@ -59,8 +82,8 @@ p.lead {
 }
 
 #watermark {
-  background: var(--bg);
-  color: #f8fafc;
+  background: white;
+  color: #000000;
   border: 1px solid var(--muted);
   padding: 6px 10px;
   border-radius: 8px;
@@ -73,6 +96,7 @@ p.lead {
   border-radius: 6px;
   cursor: pointer;
 }
+
 
 .filebox {
   position: relative;
@@ -106,8 +130,9 @@ p.lead {
 .file-btn:hover {
   background: var(--accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(56,189,248,0.4);
+  box-shadow: 0 4px 15px rgba(56,189,248,0.6);
 }
+
 
 .btn {
   background: var(--accent);
@@ -123,7 +148,7 @@ p.lead {
 .btn:hover {
   background: var(--accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(56,189,248,0.4);
+  box-shadow: 0 4px 15px rgba(56,189,248,0.6);
 }
 
 .btn.secondary {
@@ -133,29 +158,39 @@ p.lead {
 }
 
 .btn.secondary:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--glow);
+  color: var(--glow);
 }
+
 
 .options {
   display: flex;
   gap: 10px;
   align-items: center;
   flex-wrap: wrap;
+   
 }
+
+.options select{
+  cursor: pointer;
+}
+
 
 label.small {
   font-size: 13px;
   color: var(--muted);
+  
 }
 
 select, input[type="text"] {
-  background: var(--bg);
-  color: #f8fafc;
+  background: white;
+  color: #000000;
   border: 1px solid var(--muted);
   padding: 6px 10px;
+  
   border-radius: 8px;
 }
+
 
 .thumbs {
   margin-top: 16px;
@@ -169,14 +204,14 @@ select, input[type="text"] {
   border-radius: 12px;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
 }
 
 .thumb:hover {
   transform: translateY(-4px) scale(1.05);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
 }
 
 .thumb img {
@@ -200,8 +235,9 @@ select, input[type="text"] {
 }
 
 .thumb .remove:hover {
-  background: rgba(255,0,0,0.8);
+  background: rgba(255,0,0,0.85);
 }
+
 
 .progress {
   margin-top: 14px;
@@ -214,10 +250,11 @@ select, input[type="text"] {
 .progress > i {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+  background: linear-gradient(90deg, #38bdf8, #0ea5e9, #2563eb);
   width: 0%;
   transition: width 0.3s;
 }
+
 
 .output {
   margin-top: 16px;
@@ -227,18 +264,22 @@ select, input[type="text"] {
   justify-content: center;
 }
 
+
 footer {
-  margin-top: 20px;
-  font-size: 13px;
-  color: var(--muted);
+  margin-top: 30px;
+  font-size: 18px;
+  color: #e2e8f0;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   text-align: center;
+  opacity: 0.9;
 }
 
-a{
-    text-decoration: none;
+a {
+  text-decoration: none;
+  color: var(--glow);
 }
 
-
+/* Responsive */
 @media (max-width: 600px) {
   .controls {
     flex-direction: column;
