@@ -18,9 +18,6 @@ Convert your images to PDF instantly, directly in your browser. This tool works 
 4. Click **Convert to PDF** to generate your PDF file.  
 5. Download the PDF directly to your device.
 
-## Demo
-
-![Demo GIF](link-to-your-demo-gif-or-screenshot)
 
 ## Technologies Used
 
