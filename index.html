@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Image → PDF Converter</title>
+<link rel="stylesheet" href="style.css">
+<link rel="shortcut icon" href="https://raw.githubusercontent.com/MuaazAliC/Internship-Projects/refs/heads/main/6th/img/pf.png" type="image/x-icon">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>📄 Image → PDF Converter</h1>
+    <h1 style="color: chartreuse;">By Code With Muaaz</h1>
+    <p class="lead">Convert your images to a PDF — fast, free & mobile-friendly.</p>
+  </header>
+
+  <div class="controls">
+    <div class="filebox">
+      <button class="file-btn">Choose Images</button>
+      <input id="files" type="file" accept="image/*" multiple>
+    </div>
+
+    <div class="options">
+      <label class="small">Paper:</label>
+      <select id="paper">
+        <option value="a4">A4</option>
+        <option value="letter">Letter</option>
+      </select>
+      <label class="small">Orientation:</label>
+      <select id="orient">
+        <option value="portrait">Portrait</option>
+        <option value="landscape">Landscape</option>
+      </select>
+      <label class="small">Quality:</label>
+      <select id="quality">
+        <option value="0.9">High</option>
+        <option value="0.7">Medium</option>
+        <option value="0.5">Low</option>
+      </select>
+    </div>
+
+    <input id="filename" type="text" placeholder="filename.pdf">
+    <button id="generate" class="btn">Generate PDF</button>
+    <button id="clear" class="btn secondary">Clear</button>
+  </div>
+
+  <div class="thumbs" id="thumbs"></div>
+  <div class="progress" style="display:none"><i id="prog"></i></div>
+
+  <div class="output" id="output" style="display:none">
+    <a id="downloadLink" class="btn" href="#" download>⬇️ Download PDF</a>
+    <button id="openInNew" class="btn secondary">Open in new tab</button>
+  </div>
+
+  <footer>✨ 100% client-side — your files never leave your device.
+     Your privacy is our first priority. ✨</footer>
+
+</div>
+
+<!-- jsPDF -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
