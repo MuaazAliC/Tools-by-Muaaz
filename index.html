@@ -6,12 +6,12 @@
 <title>Image → PDF Converter</title>
 <link rel="stylesheet" href="style.css">
 <link rel="shortcut icon" href="https://raw.githubusercontent.com/MuaazAliC/Internship-Projects/refs/heads/main/6th/img/pf.png" type="image/x-icon">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1><i class="fa-solid fa-image" style="color: #ff7575;"></i> Image → PDF Converter</h1>
+    <h1><i class="fa-solid fa-image" style="color: #ffffff;"></i> Image → PDF Converter</h1>
     <h1 style="color: chartreuse;">By Code With Muaaz</h1>
     <p class="lead">Convert your images to a PDF — fast, free & mobile-friendly.</p>
   </header>
@@ -42,6 +42,13 @@
     </div>
 
     <input id="filename" type="text" placeholder="filename.pdf">
+    
+    <div class="watermark-controls">
+      <input id="watermark" type="text" placeholder="Optional watermark text">
+      <label class="small">Color:</label>
+      <input id="watermarkColor" type="color" value="#b4b4b4">
+    </div>
+
     <button id="generate" class="btn">Generate PDF</button>
     <button id="clear" class="btn secondary">Clear</button>
   </div>
