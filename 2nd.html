@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optical Character Recognizer</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/MuaazAliC/Internship-Projects/refs/heads/main/6th/img/pf.png" type="image/x-icon">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100dvh;
+      width: 100%;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(-45deg, #578aff, #00000083, #5e5e5e, #0f172a);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .card {
+      background: rgba(30, 41, 59, 0.85);
+      border-radius: 20px;
+      padding: 20px;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #4ade80, #22c55e, #15803d);
+      padding: 12px 25px;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+      transition: all 0.3s ease;
+    }
+    .upload-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(34, 197, 94, 0.6); }
+    .upload-btn:active { transform: scale(0.96); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9, #1e40af);
+      border: none;
+      padding: 14px 30px;
+      border-radius: 14px;
+      cursor: pointer;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+      transition: all 0.3s ease;
+      margin-top: 12px;
+    }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(56, 189, 248, 0.6); }
+    .btn:active { transform: scale(0.96); }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #b45309);
+      margin: 10px 5px 0 5px;
+    }
+    .btn-reset {
+      background: linear-gradient(135deg, #ef4444, #dc2626, #7f1d1d);
+      margin: 10px 5px 0 5px;
+    }
+
+    #preview {
+      max-width: 250px;
+      max-height: 200px;
+      margin-top: 15px;
+      border-radius: 12px;
+      object-fit: contain;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    #output {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      text-align: left;
+      white-space: pre-wrap;
+      font-size: 14px;
+      color: #e2e8f0;
+      min-height: 50px;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+
+    .loading { display: none; margin-top: 15px; text-align: center; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid #38bdf8;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px auto;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .progress-container {
+      width: 100%; height: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      width: 0%; height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+      transition: width 0.3s ease;
+    }
+    .progress-text { margin-top: 8px; font-size: 14px; color: #cbd5e1; }
+
+  
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: -400px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      transition: left 0.5s ease;
+      z-index: 9999;
+      color: white;
+    }
+    .toast.show { left: 20px; }
+    .toast.success { background: linear-gradient(135deg, #22c55e, #16a34a, #15803d); }
+    .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626, #7f1d1d); }
+    .toast.warning { background: linear-gradient(135deg, #fbbf24, #f59e0b, #b45309); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2><i class="fa-solid fa-image"></i> Optical Character Recognizer</h2>
+
+    <label for="upload" class="upload-btn">
+      <i class="fa-solid fa-upload"></i> Choose Image
+    </label>
+    <input type="file" accept="image/*" id="upload">
+
+    <button class="btn" onclick="extractText()">
+      <i class="fa-solid fa-wand-magic-sparkles"></i> Extract Text
+    </button>
+
+    <br>
+    <img id="preview" alt="">
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+      <div class="progress-text" id="progress-text">Preparing extraction...</div>
+    </div>
+
+    <div id="output">Extracted text will appear here...</div>
+
+    <div id="actions" style="display:none;">
+      <button class="btn btn-secondary" onclick="copyText()">
+        <i class="fa-solid fa-copy"></i> Copy Text
+      </button>
+      <button class="btn btn-reset" onclick="resetApp()">
+        <i class="fa-solid fa-rotate-left"></i> Reset
+      </button>
+    </div>
+  </div>
+
+ 
+  <div id="toast" class="toast"></div>
+       
+  <script>
+  const upload = document.getElementById('upload');
+  const preview = document.getElementById('preview');
+  const output = document.getElementById('output');
+  const loading = document.getElementById('loading');
+  const progressBar = document.getElementById('progress-bar');
+  const progressText = document.getElementById('progress-text');
+  const actions = document.getElementById('actions');
+  const toast = document.getElementById('toast');
+  let imageFile;
+
+  upload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      imageFile = file;
+      preview.src = URL.createObjectURL(file);
+      output.textContent = "Ready to extract...";
+      actions.style.display = "none";
+    }
+  });
+
+  // Preprocess image before OCR
+  function preprocessImage(file) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.width * 2;
+        canvas.height = img.height * 2;
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let data = imageData.data;
+
+        for (let i = 0; i < data.length; i += 4) {
+          let avg = (data[i] + data[i+1] + data[i+2]) / 3;
+         
+          let val = avg > 128 ? 255 : 0;
+          data[i] = data[i+1] = data[i+2] = val;
+        }
+        ctx.putImageData(imageData, 0, 0);
+        canvas.toBlob(resolve);
+      };
+    });
+  }
+
+  async function extractText() {
+    if (!imageFile) {
+      showToast("⚠️ Please upload an image first!", "warning");
+      return;
+    }
+
+    output.textContent = "";
+    loading.style.display = "block";
+    progressBar.style.width = "0%";
+    progressText.textContent = "Preprocessing image...";
+    actions.style.display = "none";
+
+    try {
+      const processedBlob = await preprocessImage(imageFile);
+
+      Tesseract.recognize(processedBlob, 'eng', {
+        logger: m => {
+          if (m.status === "recognizing text") {
+            progressBar.style.width = Math.round(m.progress * 100) + "%";
+            progressText.textContent = `Extracting: ${Math.round(m.progress * 100)}%`;
+          }
+        }
+      }, {
+        // Stronger recognition options
+        tessedit_char_whitelist: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,!?()[]{}:;@#$%&*-_+=/\\'\"",
+        preserve_interword_spaces: 1
+      })
+      .then(({ data: { text } }) => {
+        loading.style.display = "none";
+        output.textContent = text.trim() || "⚠️ No text found in image.";
+        actions.style.display = "block";
+      })
+      .catch(err => {
+        loading.style.display = "none";
+        showToast("❌ Error: " + err.message, "error");
+      });
+
+    } catch (err) {
+      loading.style.display = "none";
+      showToast("❌ Preprocessing failed: " + err.message, "error");
+    }
+  }
+
+  function copyText() {
+    const text = output.textContent;
+    if (text && text !== "Extracted text will appear here...") {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("✅ Text copied to clipboard!", "success");
+      });
+    } else {
+      showToast("⚠️ Nothing to copy!", "warning");
+    }
+  }
+
+  function resetApp() {
+    imageFile = null;
+    preview.src = "";
+    output.textContent = "Extracted text will appear here...";
+    progressBar.style.width = "0%";
+    actions.style.display = "none";
+    upload.value = "";
+  }
+
+  function showToast(message, type="success") {
+    toast.textContent = message;
+    toast.className = "toast " + type + " show";
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3000);
+  }
+
+  </script>
+</body>
+</html>
