@@ -28,8 +28,3 @@ Convert your images to PDF instantly, directly in your browser. This tool works 
 ## Privacy
 
 Your privacy is our top priority. Everything runs **locally** in your browser—your images are never uploaded or stored on any server.
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
-
