@@ -209,6 +209,10 @@ footer {
   text-align: center;
 }
 
+a{
+    text-decoration: none;
+}
+
 /* Mobile adjustments */
 @media (max-width: 600px) {
   .controls {
