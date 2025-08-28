@@ -14,6 +14,8 @@ const qualityEl = document.getElementById('quality');
 const progWrap = document.querySelector('.progress');
 const progBar = document.getElementById('prog');
 const filenameEl = document.getElementById('filename');
+const watermarkEl = document.getElementById('watermark');
+const watermarkColorEl = document.getElementById('watermarkColor');
 
 let selectedFiles = [];
 
@@ -44,15 +46,18 @@ clearBtn.addEventListener('click', ()=>{
   output.style.display = 'none';
   progWrap.style.display = 'none';
   filenameEl.value = '';
+  watermarkEl.value = '';
+  watermarkColorEl.value = '#b4b4b4';
 });
 
 downloadLink.addEventListener('click', ()=>{
-  // Clear files and reset UI after download
   selectedFiles = [];
   renderThumbs();
   output.style.display = 'none';
   progWrap.style.display = 'none';
   filenameEl.value = '';
+  watermarkEl.value = '';
+  watermarkColorEl.value = '#b4b4b4';
 });
 
 generateBtn.addEventListener('click', async ()=>{
@@ -70,6 +75,9 @@ generateBtn.addEventListener('click', async ()=>{
     const usableW = pageWidth - margin*2;
     const usableH = pageHeight - margin*2;
 
+    const watermarkText = watermarkEl.value.trim();
+    const watermarkColor = watermarkColorEl.value; // HEX
+
     for(let i=0;i<selectedFiles.length;i++){
       const file = selectedFiles[i];
       progBar.style.width = Math.round((i/selectedFiles.length)*100) + '%';
@@ -84,6 +92,15 @@ generateBtn.addEventListener('click', async ()=>{
       const x = (pageWidth - drawW)/2;
       const y = (pageHeight - drawH)/2;
       doc.addImage(down, 'JPEG', x, y, drawW, drawH);
+
+     
+      if(watermarkText){
+        doc.setFontSize(40);
+        doc.setTextColor(watermarkColor);
+        doc.setFont('helvetica', 'bold');
+        doc.text(watermarkText, pageWidth/2, pageHeight/2, { align: 'center', angle: 45 });
+      }
+
       if(i < selectedFiles.length - 1) doc.addPage();
     }
 
