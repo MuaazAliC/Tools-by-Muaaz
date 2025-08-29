@@ -8,19 +8,20 @@
   <link rel="shortcut icon" href="https://raw.githubusercontent.com/MuaazAliC/Internship-Projects/refs/heads/main/6th/img/pf.png" type="image/x-icon">
 
   <style>
-    /* ===== RESET ===== */
-  /* ===== RESET ===== */
+   
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
-
+html {
+  scroll-behavior: smooth;
+}
 html, body {
   width: 100%;
   height: 100%;
-  overflow-x: hidden; /* prevent horizontal scroll */
+  overflow-x: hidden; /* prevent horizontal scrollbar */
 }
 
 body {
@@ -30,7 +31,7 @@ body {
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  min-height: 100vh;  /* ensures footer sticks */
 }
 
 /* ===== ANIMATION ===== */
@@ -49,12 +50,13 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 5%; /* reduced from 8% to avoid overflow */
+  padding: 15px 5%;
   position: sticky;
   top: 0;
   width: 100%;
   z-index: 1000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box; /* prevent overflow */
 }
 
 nav .logo {
@@ -73,6 +75,7 @@ nav ul {
   list-style: none;
   display: flex;
   gap: 25px;
+  flex-wrap: wrap; /* prevent items from overflowing */
 }
 
 nav ul li a {
@@ -82,6 +85,7 @@ nav ul li a {
   transition: 0.3s ease;
   padding: 6px 10px;
   border-radius: 8px;
+  white-space: nowrap; /* keep menu neat */
 }
 
 nav ul li a:hover {
@@ -108,6 +112,7 @@ nav ul li a:hover {
 header {
   text-align: center;
   margin: 30px 10px 20px;
+  padding: 0 15px;
 }
 
 header h1 {
@@ -154,11 +159,13 @@ header p {
 /* ===== TOOLS GRID ===== */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 25px;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1200px; /* keeps content centered */
+  margin: 0 auto;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .tool-card {
@@ -239,9 +246,10 @@ footer {
   color: #cbd5e1;
   text-align: center;
   padding: 30px 10px;
-  margin-top: 60px;
+  margin-top: auto; /* footer stays at bottom */
   width: 100%;
   border-top: 1px solid rgba(255,255,255,0.1);
+  box-sizing: border-box;
 }
 
 footer .social-links {
@@ -265,6 +273,7 @@ footer p {
   opacity: 0.8;
 }
 
+
   </style>
 </head>
 <body>
@@ -275,7 +284,7 @@ footer p {
     <ul id="nav-links">
       <li><a href="#">Home</a></li>
       <li><a href="#">Tools</a></li>
-      <li><a href="#">Contact</a></li>
+      <li><a href="#footer">Contact</a></li>
     </ul>
     <div class="menu-toggle" onclick="toggleMenu()">
       <span></span>
@@ -310,10 +319,16 @@ footer p {
         <h3>Image to Text</h3>
       </div>
     </a>
+     <a href="word_to_pdf.html">
+      <div class="tool-card" data-name="word to pdf">
+        <i class="fa-solid fa-file-word"></i>
+        <h3>Word to Pdf</h3>
+      </div>
+    </a>
+    
   </div>
 
-  <!-- ===== FOOTER ===== -->
-  <footer>
+  <footer id="footer">
     <div class="social-links">
       <a href="https://www.youtube.com/@CodeWithMuaaz-official" target="_blank"><i class="fab fa-youtube"></i></a>
       <a href="https://github.com/MuhammadMuaazAli" target="_blank"><i class="fab fa-github"></i></a>
@@ -324,27 +339,47 @@ footer p {
     <p>© 2025 Muhammad Muaaz Ali. All rights reserved.</p>
   </footer>
 
-  <!-- ===== JS ===== -->
   <script>
-    function toggleMenu() {
-      document.getElementById("nav-links").classList.toggle("active");
+     function toggleMenu() {
+  document.getElementById("nav-links").classList.toggle("active");
+}
+
+// === CLOSE NAVBAR ON OUTSIDE CLICK ===
+document.addEventListener("click", function (event) {
+  const nav = document.getElementById("nav-links");
+  const toggleBtn = document.querySelector(".menu-toggle"); // your hamburger button
+
+  if (
+    nav.classList.contains("active") && 
+    !nav.contains(event.target) && 
+    !toggleBtn.contains(event.target)
+  ) {
+    nav.classList.remove("active");
+  }
+});
+
+// === CLOSE NAVBAR WHEN LINK CLICKED ===
+document.querySelectorAll("#nav-links a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.getElementById("nav-links").classList.remove("active");
+  });
+});
+
+// === SEARCH LOGIC ===
+const searchInput = document.getElementById("searchInput");
+const toolCards = document.querySelectorAll(".tool-card");
+
+searchInput.addEventListener("keyup", function () {
+  const filter = searchInput.value.toLowerCase().trim();
+  toolCards.forEach(card => {
+    const toolName = card.dataset.name.toLowerCase();
+    if (toolName.includes(filter)) {
+      card.parentElement.style.display = "block"; // Show card
+    } else {
+      card.parentElement.style.display = "none"; // Hide card
     }
-
-    // === SEARCH LOGIC ===
-    const searchInput = document.getElementById("searchInput");
-    const toolCards = document.querySelectorAll(".tool-card");
-
-    searchInput.addEventListener("keyup", function () {
-      const filter = searchInput.value.toLowerCase().trim();
-      toolCards.forEach(card => {
-        const toolName = card.dataset.name.toLowerCase();
-        if (toolName.includes(filter)) {
-          card.parentElement.style.display = "block"; // Show card
-        } else {
-          card.parentElement.style.display = "none"; // Hide card
-        }
-      });
-    });
+  });
+});
   </script>
 
 </body>
