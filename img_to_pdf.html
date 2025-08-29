@@ -532,25 +532,46 @@ a {
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script >
-     function toggleMenu() {
-      document.getElementById("nav-links").classList.toggle("active");
+       function toggleMenu() {
+  document.getElementById("nav-links").classList.toggle("active");
+}
+
+// === CLOSE NAVBAR ON OUTSIDE CLICK ===
+document.addEventListener("click", function (event) {
+  const nav = document.getElementById("nav-links");
+  const toggleBtn = document.querySelector(".menu-toggle"); // your hamburger button
+
+  if (
+    nav.classList.contains("active") && 
+    !nav.contains(event.target) && 
+    !toggleBtn.contains(event.target)
+  ) {
+    nav.classList.remove("active");
+  }
+});
+
+// === CLOSE NAVBAR WHEN LINK CLICKED ===
+document.querySelectorAll("#nav-links a").forEach(link => {
+  link.addEventListener("click", () => {
+    document.getElementById("nav-links").classList.remove("active");
+  });
+});
+
+// === SEARCH LOGIC ===
+const searchInput = document.getElementById("searchInput");
+const toolCards = document.querySelectorAll(".tool-card");
+
+searchInput.addEventListener("keyup", function () {
+  const filter = searchInput.value.toLowerCase().trim();
+  toolCards.forEach(card => {
+    const toolName = card.dataset.name.toLowerCase();
+    if (toolName.includes(filter)) {
+      card.parentElement.style.display = "block"; // Show card
+    } else {
+      card.parentElement.style.display = "none"; // Hide card
     }
-
-    // === SEARCH LOGIC ===
-    const searchInput = document.getElementById("searchInput");
-    const toolCards = document.querySelectorAll(".tool-card");
-
-    searchInput.addEventListener("keyup", function () {
-      const filter = searchInput.value.toLowerCase().trim();
-      toolCards.forEach(card => {
-        const toolName = card.dataset.name.toLowerCase();
-        if (toolName.includes(filter)) {
-          card.parentElement.style.display = "block"; // Show card
-        } else {
-          card.parentElement.style.display = "none"; // Hide card
-        }
-      });
-    });
+  });
+});
     const filesEl = document.getElementById('files');
 const fileBtn = document.querySelector('.file-btn');
 fileBtn.addEventListener('click', () => filesEl.click());
