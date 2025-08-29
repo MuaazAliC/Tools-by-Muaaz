@@ -1,64 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Optical Character Recognizer</title>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="shortcut icon" href="https://raw.githubusercontent.com/MuaazAliC/Internship-Projects/refs/heads/main/6th/img/pf.png" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OCR Tool by Muaaz</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-  :root {
-  --card: rgba(30, 41, 59, 0.75);
-  --muted: #94a3b8;
-  --accent: linear-gradient(135deg, #b98c8c, #0ea5e9, #2563eb);
-  --accent-dark: #1d4ed8;
-  --glow: #38bdf8;
-}
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+    body {
+      background: linear-gradient(-45deg, #578aff, #00000083, #5e5e5e, #0f172a);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
+      color: #fff;
+    }
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+    /* NAVBAR */
+    nav { width: 100%; padding: 15px 25px; background: rgba(15, 23, 42, 0.8);
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 1000; }
+    nav h1 { font-size: 22px; font-weight: 600; color: #38bdf8; }
+    .nav-links { display: flex; gap: 20px; }
+    .nav-links a { color: #fff; text-decoration: none; font-size: 15px; transition: color 0.3s; }
+    .nav-links a:hover { color: #38bdf8; }
+    .menu-toggle { display: none; font-size: 22px; cursor: pointer; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; background: rgba(15,23,42,0.95);
+        position: absolute; top: 60px; right: 0; width: 200px; padding: 15px; }
+      .nav-links.active { display: flex; }
+      .menu-toggle { display: block; color: #fff; }
+    }
 
-html {
-  scroll-behavior: smooth;
-}
+    /* CARD */
+    .card {
+      max-width: 750px; margin: 40px auto;
+      background: rgba(30, 41, 59, 0.85);
+      padding: 25px; border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      text-align: center;
+      
+    }
+    .card h2 { font-size: 22px; margin-bottom: 15px; color: #38bdf8; }
 
-html, body {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  background: linear-gradient(-45deg, #578aff, #00000083, #5e5e5e, #0f172a);
-  background-size: 400% 400%;
-  animation: gradientFlow 15s ease infinite;
-  color: #ffffff;
-}
+    input[type="file"] { display: none; }
+    .upload-btn {
+      display: inline-block; background: #2563eb; color: white;
+      padding: 12px 20px; border-radius: 8px; cursor: pointer;
+      font-weight: 500; transition: 0.3s;
+    }
+    .upload-btn:hover { background: #1d4ed8; }
 
-@keyframes gradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+    .btn {
+      background: #16a34a; color: white; padding: 12px 20px;
+      border: none; border-radius: 8px; cursor: pointer;
+      margin: 10px 5px; font-weight: 500; transition: 0.3s;
+    }
+    .btn:hover { background: #15803d; }
+    .btn-reset { background: #dc2626; }
+    .btn-reset:hover { background: #b91c1c; }
+    .btn-secondary { background: #2563eb; }
+    .btn-secondary:hover { background: #1e40af; }
 
-/* Navbar */
-nav {
+    .loading { display: none; margin: 15px 0; }
+    .progress-bar { width: 0%; height: 8px; background: #38bdf8;
+      border-radius: 4px; transition: width 0.3s; }
+    #progressText { font-size: 14px; margin-top: 5px; }
+
+    /* Image preview */
+    .preview {
+      width: 100%; max-width: 500px; height: 300px;
+      margin: 15px auto; border: 2px dashed #38bdf8;
+      border-radius: 12px; display: flex;
+      justify-content: center; align-items: center;
+      overflow: hidden; background: rgba(15,23,42,0.5);
+    }
+    .preview img {
+      max-width: 100%; max-height: 100%; object-fit: contain;
+    }
+
+    #output {
+      margin-top: 15px; padding: 15px;
+      background: rgba(15,23,42,0.7);
+      border-radius: 8px; white-space: pre-wrap;
+      text-align: left; min-height: 120px;
+    }
+
+    /* FOOTER */
+    footer { margin-top: 30px; font-size: 18px; color: #e2e8f0;
+      font-family: serif; text-align: center; opacity: 0.9; padding: 20px 0; }
+    footer button { background: green; color: #fff; padding: 10px 18px;
+      border-radius: 999px; cursor: pointer; font-weight: 600;
+      border: none; font-size: 16px; margin-top: 10px; }
+
+    /* TOAST */
+    #toast {
+      position: fixed; top: 20px; left: -400px;
+      min-width: 250px; max-width: 350px; padding: 15px 20px;
+      font-size: 16px; font-weight: 500; color: #fff;
+      background: linear-gradient(135deg, #2563eb, #1e3a8a);
+      border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 9999; opacity: 0; transition: all 0.5s ease;
+    }
+    #toast.show { left: 20px; opacity: 1; }
+    nav {
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 8%;
+  padding: 15px 5%;
   position: sticky;
   top: 0;
   width: 100%;
   z-index: 1000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box; /* prevent overflow */
 }
 
 nav .logo {
@@ -74,17 +136,10 @@ nav .logo:hover {
 }
 
 nav ul {
-   list-style: none;
+  list-style: none;
   display: flex;
   gap: 25px;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  transform: translateY(0);
-  opacity: 1; 
-}
-
-nav ul.active {
-  transform: translateY(0);
-  opacity: 1;
+  flex-wrap: wrap; /* prevent items from overflowing */
 }
 
 nav ul li a {
@@ -94,6 +149,7 @@ nav ul li a {
   transition: 0.3s ease;
   padding: 6px 10px;
   border-radius: 8px;
+  white-space: nowrap; /* keep menu neat */
 }
 
 nav ul li a:hover {
@@ -101,7 +157,7 @@ nav ul li a:hover {
   color: #38bdf8;
 }
 
-/* Hamburger */
+/* ===== HAMBURGER ===== */
 .menu-toggle {
   display: none;
   flex-direction: column;
@@ -115,256 +171,49 @@ nav ul li a:hover {
   background: #fff;
   border-radius: 2px;
 }
-
-/* Wrapper */
-.wrap {
-  max-width: 100%;
-  margin: auto;
-  padding: 20px;
-}
-
-/* Header */
-header {
+footer {
+  background: #1e293b;
+  color: #cbd5e1;
   text-align: center;
-  margin-bottom: 20px;
-}
-
-h1 {
-  font-size: 28px;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, #38bdf8, #0ea5e9, #2563eb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-p.lead {
-  font-size: 15px;
-  color: var(--muted);
-  margin: 0;
-}
-
-/* Generic Card */
-.card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-  backdrop-filter: blur(12px);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  max-width: 400px;
-  margin: 20px auto;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.card:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 10px rgba(56,189,248,0.3) inset;
-}
-
-.card h2 {
-  font-size: 20px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #38bdf8, #0ea5e9, #2563eb);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.card .upload-btn {
-  background: var(--accent);
-  color: #fff;
-  padding: 10px 16px;
-  border-radius: 999px;
-  cursor: pointer;
-  display: inline-block;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  text-align: center;
-}
-
-.card .upload-btn:hover {
-  background: var(--accent-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(56,189,248,0.6), 0 0 8px rgba(56,189,248,0.4);
-}
-
-.card input[type="file"] {
-  display: none;
-}
-
-.card img#preview {
+  padding: 30px 10px;
+  margin-top: auto; /* footer stays at bottom */
   width: 100%;
-  max-height: 200px;
-  object-fit: contain;
-  border-radius: 12px;
-  margin-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  box-sizing: border-box;
 }
 
-.card .loading {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
+footer .social-links {
+  margin-bottom: 15px;
 }
 
-.card .spinner {
-  border: 4px solid rgba(255,255,255,0.2);
-  border-top: 4px solid #38bdf8;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  animation: spin 1s linear infinite;
+footer .social-links a {
+  color: #cbd5e1;
+  margin: 0 12px;
+  font-size: 22px;
+  transition: 0.3s;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+footer .social-links a:hover {
+  color: #38bdf8;
+  transform: scale(1.2);
 }
 
-.card .progress-container {
-  width: 100%;
-  background: rgba(255,255,255,0.1);
-  border-radius: 999px;
-  overflow: hidden;
-  height: 8px;
-}
-
-.card .progress-bar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(135deg, #38bdf8, #0ea5e9, #2563eb);
-  transition: width 0.3s ease;
-}
-
-.card .progress-text {
+footer p {
   font-size: 14px;
-  color: var(--muted);
+  opacity: 0.8;
 }
 
-.card #output {
-  background: rgba(255,255,255,0.05);
-  padding: 10px;
-  border-radius: 12px;
-  min-height: 60px;
-  font-family: monospace;
-  font-size: 14px;
-  overflow-wrap: break-word;
-}
-
-.card #actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.card .btn {
-  background: var(--accent);
-  color: #fff;
-  padding: 10px 14px;
-  border-radius: 999px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.3s ease;
-}
-
-.card .btn:hover {
-  background: var(--accent-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(56,189,248,0.6);
-}
-
-.card .btn.btn-secondary {
-  background: transparent;
-  border: 1px solid var(--muted);
-  color: var(--muted);
-}
-
-.card .btn.btn-secondary:hover {
-  border-color: var(--glow);
-  color: var(--glow);
-}
-
-.card .btn.btn-reset {
-  background: #f87171;
-  color: #fff;
-}
-
-.card .btn.btn-reset:hover {
-  background: #ef4444;
-}
-
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.85);
-  color: #fff;
-  padding: 12px 24px;
-  border-radius: 12px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 2000;
-}
-
-.toast.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Footer */
- footer {
-      background: #1e293b;
-      color: #cbd5e1;
-      text-align: center;
-      /* padding: 30px 10px; */
-      width: fit-content;
-      margin-top: 60px;
-      width: 100%;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-
-    footer .social-links {
-        margin-top: 10px;
-      margin-bottom: 15px;
-    }
-
-    footer .social-links a {
-      color: #cbd5e1;
-      margin: 0 12px;
-      font-size: 22px;
-      transition: 0.3s;
-    }
-
-    footer .social-links a:hover {
-      color: #38bdf8;
-      transform: scale(1.2);
-    }
-
-    footer p {
-      font-size: 20px;
-      margin-bottom: 10px;
-      opacity: 0.8;
-    }
-
-/* Responsive */
 @media (max-width: 768px) {
+  .card{
+    margin: 20px;
+  }
   nav ul {
     display: none;
     flex-direction: column;
     background: rgba(30, 41, 59, 0.95);
     position: absolute;
     top: 60px;
-    right: 8%;
+    right: 5%;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.2);
@@ -377,42 +226,13 @@ p.lead {
   .menu-toggle {
     display: flex;
   }
-
-  footer {
-    padding: 20px 15px;
-  }
-
-  footer h2 {
-    font-size: 18px;
-  }
-
-  footer button {
-    font-size: 16px;
-    padding: 10px 18px;
-    min-width: 150px;
-  }
 }
-
-@media (max-width: 600px) {
-  .controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .options {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .btn, .file-btn {
-    width: 100%;
-  }
-}
-
   </style>
 </head>
 <body>
-     <nav>
+
+  <!-- NAVBAR -->
+  <nav>
     <div class="logo">Code With Muaaz</div>
     <ul id="nav-links">
       <li><a href="index.html">Home</a></li>
@@ -427,42 +247,31 @@ p.lead {
     </div>
   </nav>
 
+  <!-- OCR CARD -->
   <div class="card">
     <h2><i class="fa-solid fa-image"></i> Optical Character Recognizer</h2>
-
-    <label for="upload" class="upload-btn">
-      <i class="fa-solid fa-upload"></i> Choose Image
-    </label>
+    <label for="upload" class="upload-btn"><i class="fa-solid fa-upload"></i> Choose Image</label>
     <input type="file" accept="image/*" id="upload">
+    
+    <!-- Preview Box -->
+    <div class="preview" id="previewBox">
+      <span style="color:#94a3b8;">📷 Image preview will appear here</span>
+    </div>
 
-    <button class="btn" onclick="extractText()">
-      <i class="fa-solid fa-wand-magic-sparkles"></i> Extract Text
-    </button>
-
-    <br>
-    <img id="preview" alt="">
+    <button class="btn" onclick="extractText()"><i class="fa-solid fa-play"></i> Extract</button>
+    <button class="btn btn-reset" onclick="resetAll()"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+    <button class="btn btn-secondary" onclick="copyText()"><i class="fa-solid fa-copy"></i> Copy</button>
+    <button class="btn btn-secondary" onclick="downloadText()"><i class="fa-solid fa-download"></i> Download</button>
 
     <div class="loading" id="loading">
-      <div class="spinner"></div>
-      <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
-      <div class="progress-text" id="progress-text">Preparing extraction...</div>
+      <div class="progress-bar" id="progressBar"></div>
+      <p id="progressText">Processing...</p>
     </div>
 
-    <div id="output">Extracted text will appear here...</div>
-
-    <div id="actions" style="display:none;">
-      <button class="btn btn-secondary" onclick="copyText()">
-        <i class="fa-solid fa-copy"></i> Copy Text
-      </button>
-      <button class="btn btn-reset" onclick="resetApp()">
-        <i class="fa-solid fa-rotate-left"></i> Reset
-      </button>
-    </div>
+    <div id="output"></div>
   </div>
 
- 
-  <div id="toast" class="toast"></div>
-       
+  <!-- FOOTER -->
   <footer id="footer">
     <div class="social-links">
       <a href="https://www.youtube.com/@CodeWithMuaaz-official" target="_blank"><i class="fab fa-youtube"></i></a>
@@ -470,13 +279,115 @@ p.lead {
       <a href="https://www.instagram.com/codewithmuaaz" target="_blank"><i class="fab fa-instagram"></i></a>
       <a href="https://www.linkedin.com/in/muhammad-muaaz-ali-6373ab2a3/" target="_blank"><i class="fab fa-linkedin"></i></a>
       <a href="https://muhammadmuaazali.github.io/website/" target="_blank"><i class="fas fa-globe"></i></a>
-    </div><p class="footer-text">✨ 100% client-side — your files never leave your device.  
-  Your privacy is our first priority. ✨</p>
+    </div>
     <p>© 2025 Muhammad Muaaz Ali. All rights reserved.</p>
   </footer>
 
+
+  <!-- TOAST -->
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script>
-      function toggleMenu() {
+    const upload = document.getElementById("upload");
+    const previewBox = document.getElementById("previewBox");
+    const output = document.getElementById("output");
+    const loading = document.getElementById("loading");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    let imageFile = null;
+
+    upload.addEventListener("change", (e) => {
+      imageFile = e.target.files[0];
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          previewBox.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+        };
+        reader.readAsDataURL(imageFile);
+        showToast("✅ Image uploaded successfully!", "success");
+      }
+    });
+
+    async function extractText() {
+      if (!imageFile) {
+        showToast("⚠️ Please upload an image first!", "warning");
+        return;
+      }
+
+      output.textContent = "";
+      loading.style.display = "block";
+      progressBar.style.width = "0%";
+      progressText.textContent = "Preprocessing image...";
+
+      try {
+        Tesseract.recognize(imageFile, 'eng', {
+          logger: m => {
+            if (m.status === "recognizing text") {
+              progressBar.style.width = Math.round(m.progress * 100) + "%";
+              progressText.textContent = `Extracting: ${Math.round(m.progress * 100)}%`;
+            }
+          }
+        })
+        .then(({ data: { text } }) => {
+          loading.style.display = "none";
+          output.textContent = text.trim() || "⚠️ No text found in image.";
+        })
+        .catch(err => {
+          loading.style.display = "none";
+          showToast("❌ Error: " + err.message, "error");
+        });
+      } catch (err) {
+        loading.style.display = "none";
+        showToast("❌ Failed: " + err.message, "error");
+      }
+    }
+
+    function resetAll() {
+      upload.value = "";
+      imageFile = null;
+      previewBox.innerHTML = `<span style="color:#94a3b8;">📷 Image preview will appear here</span>`;
+      output.textContent = "";
+      progressBar.style.width = "0%";
+      progressText.textContent = "";
+      loading.style.display = "none";
+      showToast("🔄 Reset done!", "info");
+    }
+
+    function copyText() {
+      const text = output.textContent.trim();
+      if (!text) return showToast("⚠️ No text to copy!", "warning");
+      navigator.clipboard.writeText(text);
+      showToast("📋 Text copied!", "success");
+    }
+
+    function downloadText() {
+      const text = output.textContent.trim();
+      if (!text) return showToast("⚠️ No text to download!", "warning");
+      const blob = new Blob([text], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "extracted_text.txt";
+      link.click();
+      showToast("💾 File downloaded!", "success");
+    }
+
+    function toggleMenu() {
+      document.getElementById("nav-links").classList.toggle("active");
+    }
+
+    function showToast(message, type = "info") {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      if (type === "error") toast.style.background = "linear-gradient(135deg, #dc2626, #7f1d1d)";
+      else if (type === "success") toast.style.background = "linear-gradient(135deg, #16a34a, #065f46)";
+      else if (type === "warning") toast.style.background = "linear-gradient(135deg, #f59e0b, #92400e)";
+      else toast.style.background = "linear-gradient(135deg, #2563eb, #1e3a8a)";
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 4000);
+    }
+
+     function toggleMenu() {
   document.getElementById("nav-links").classList.toggle("active");
 }
 
@@ -516,125 +427,6 @@ searchInput.addEventListener("keyup", function () {
     }
   });
 });
-  const upload = document.getElementById('upload');
-  const preview = document.getElementById('preview');
-  const output = document.getElementById('output');
-  const loading = document.getElementById('loading');
-  const progressBar = document.getElementById('progress-bar');
-  const progressText = document.getElementById('progress-text');
-  const actions = document.getElementById('actions');
-  const toast = document.getElementById('toast');
-  let imageFile;
-
-  upload.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      imageFile = file;
-      preview.src = URL.createObjectURL(file);
-      output.textContent = "Ready to extract...";
-      actions.style.display = "none";
-    }
-  });
-
-  // Preprocess image before OCR
-  function preprocessImage(file) {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-
-        canvas.width = img.width * 2;
-        canvas.height = img.height * 2;
-
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        let data = imageData.data;
-
-        for (let i = 0; i < data.length; i += 4) {
-          let avg = (data[i] + data[i+1] + data[i+2]) / 3;
-         
-          let val = avg > 128 ? 255 : 0;
-          data[i] = data[i+1] = data[i+2] = val;
-        }
-        ctx.putImageData(imageData, 0, 0);
-        canvas.toBlob(resolve);
-      };
-    });
-  }
-
-  async function extractText() {
-    if (!imageFile) {
-      showToast("⚠️ Please upload an image first!", "warning");
-      return;
-    }
-
-    output.textContent = "";
-    loading.style.display = "block";
-    progressBar.style.width = "0%";
-    progressText.textContent = "Preprocessing image...";
-    actions.style.display = "none";
-
-    try {
-      const processedBlob = await preprocessImage(imageFile);
-
-      Tesseract.recognize(processedBlob, 'eng', {
-        logger: m => {
-          if (m.status === "recognizing text") {
-            progressBar.style.width = Math.round(m.progress * 100) + "%";
-            progressText.textContent = `Extracting: ${Math.round(m.progress * 100)}%`;
-          }
-        }
-      }, {
-        // Stronger recognition options
-        tessedit_char_whitelist: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,!?()[]{}:;@#$%&*-_+=/\\'\"",
-        preserve_interword_spaces: 1
-      })
-      .then(({ data: { text } }) => {
-        loading.style.display = "none";
-        output.textContent = text.trim() || "⚠️ No text found in image.";
-        actions.style.display = "block";
-      })
-      .catch(err => {
-        loading.style.display = "none";
-        showToast("❌ Error: " + err.message, "error");
-      });
-
-    } catch (err) {
-      loading.style.display = "none";
-      showToast("❌ Preprocessing failed: " + err.message, "error");
-    }
-  }
-
-  function copyText() {
-    const text = output.textContent;
-    if (text && text !== "Extracted text will appear here...") {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast("✅ Text copied to clipboard!", "success");
-      });
-    } else {
-      showToast("⚠️ Nothing to copy!", "warning");
-    }
-  }
-
-  function resetApp() {
-    imageFile = null;
-    preview.src = "";
-    output.textContent = "Extracted text will appear here...";
-    progressBar.style.width = "0%";
-    actions.style.display = "none";
-    upload.value = "";
-  }
-
-  function showToast(message, type="success") {
-    toast.textContent = message;
-    toast.className = "toast " + type + " show";
-    setTimeout(() => {
-      toast.classList.remove("show");
-    }, 3000);
-  }
-
   </script>
 </body>
 </html>
